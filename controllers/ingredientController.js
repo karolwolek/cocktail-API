@@ -8,7 +8,7 @@ import {
 
 // Get all ingredients
 export async function fetchAllIngredients(req, res, next) {
-    const allowed_parameters = [
+    const allowed_parameters = [ // dozwolone parametry w URL
         "name",
         "type",
         "description",
@@ -16,10 +16,10 @@ export async function fetchAllIngredients(req, res, next) {
         "percentage",
         "image_url", 
         "sort"
-    ];
+    ]; 
 
-    const url_fields = Object.entries(req.query);
-    let filter = url_fields.find("sort", any);
+    const url_fields = Object.entries(req.query); // pobrane parametry w formie obiektu przechowywane w tablicy dwójek [string: name, any: value]
+    let filter = url_fields.find(([key]) => key === "sort"); // szukamy parametru sort
     if(filter) {
         filter = handleSortQuery(filter, allowed_parameters);
     }
@@ -42,6 +42,8 @@ export async function fetchAllIngredients(req, res, next) {
         next(error);
     }
 }
+
+
 
 // Get a single ingredient by ID
 export async function fetchIngredientById(req, res, next) {

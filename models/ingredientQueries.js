@@ -8,9 +8,9 @@ export async function getIngredients(sort, filter) {
     const values = [];
 
     if(filter) {
-        conditions.push("WHERE")
+        conditions.push("WHERE");
     }
-
+    
     const [rows] = await pool.query();
     return rows;
 }
