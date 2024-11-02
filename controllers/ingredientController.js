@@ -8,35 +8,12 @@ import {
 
 // Get all ingredients
 export async function fetchAllIngredients(req, res, next) {
-    const allowed_parameters = [ // dozwolone parametry w URL
-        "name",
-        "type",
-        "description",
-        "is_alcoholic",
-        "percentage",
-        "image_url", 
-        "sort"
-    ]; 
-
-    const url_fields = Object.entries(req.query); // pobrane parametry w formie obiektu przechowywane w tablicy dwójek [string: name, any: value]
-    let filter = url_fields.find(([key]) => key === "sort"); // szukamy parametru sort
-    if(filter) {
-        filter = handleSortQuery(filter, allowed_parameters);
-    }
-    let [condition, values] = handleSearchQuery(url_fields, allowed_parameters);
-    
+    const sort = req.sort_condition || '';
+    const condition = req.search_condition || '';
+    const values = req.search_values || [];
 
     try {
-        for(const [field, value] in req.query){
-
-            if(!allowed_parameters.includes(field)) {
-                return res.status(400).json({ error: 'Bad Request: URL encoding' });
-            }
-
-            url_field[field] = value
-        }
-
-        const ingredients = await getIngredients(sort, filter);
+        const ingredients = await getIngredients(sort, condition, values);
         res.status(200).json(ingredients);
     } catch (error) {
         next(error);
@@ -62,7 +39,7 @@ export async function fetchIngredientById(req, res, next) {
 // Create a new ingredient
 export async function addIngredient(req, res, next) {
     try {
-        const { name, type, description, is_alcoholic, percentage, image_url } = req.body;
+        const { name, category, description, image_url } = req.body;
         const ingredient = await createIngredient(name, type, description, is_alcoholic, percentage, image_url);
         res.status(201).json(ingredient);
     } catch (error) {

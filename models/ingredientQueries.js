@@ -2,44 +2,9 @@ import pool from '../config/database.js';
 
 
 
-export async function getIngredients(sort, filter) {
-    let query = "SELECT * FROM Ingredient";
-    const conditions = [];
-    const values = [];
-
-    if(filter) {
-        conditions.push("WHERE");
-    }
-    
-    const [rows] = await pool.query();
-    return rows;
-}
-
-export async function getSortedIngredients(keyword) {
-    const [rows] = await pool.query(`
-        SELECT * 
-        FROM Ingredient
-        ORDER BY ${keyword}
-        `);
-    return rows;
-}
-
-export async function getFilteredIngredients(condition) {
-    const [rows] = await pool.query(`
-        SELECT *
-        FROM Ingredient
-        WHERE ${condition}
-        `);
-    return rows;
-}
-
-export async function getSortedAndFilteredIngredients(sort_keyword, filter_condition) {
-    const [rows] = await pool.query(`
-        SELECT *
-        FROM Ingredient
-        WHERE ${filter_condition}
-        ORDER BY ${sort_keyword}
-        `);
+export async function getIngredients(sort, condition, values) {
+    const query = `SELECT * FROM Ingredient ${condition} ${sort}`;
+    const [rows] = await pool.query(query, values);
     return rows;
 }
 
