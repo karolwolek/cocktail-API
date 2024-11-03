@@ -15,6 +15,10 @@ export async function fetchAllIngredients(req, res, next) {
     try {
         const ingredients = await getIngredients(sort, condition, values);
         res.status(200).json(ingredients);
+
+        // for in between controllers purpose
+        return ingredients;
+        
     } catch (error) {
         next(error);
     }

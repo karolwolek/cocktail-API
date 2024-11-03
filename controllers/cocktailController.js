@@ -6,6 +6,8 @@ import {
     deleteCocktail
 } from '../models/cocktailQueries.js'
 
+import { getIngredients} from '../models/ingredientQueries.js'
+
 // Get all cocktails
 export async function fetchAllCocktails(req, res, next) {
     const sort = req.sort_condition || '';
@@ -36,8 +38,11 @@ export async function fetchCocktailById(req, res, next) {
 // Create a new cocktail
 export async function addCocktail(req, res, next) {
     try {
-        const { name, category, description, image_url } = req.body;
-        const cocktail = await createCocktail(name, category, description, image_url);
+        const { name, category, description, image_url, ingredients } = req.body;
+        
+        await verifyIngredients(ingredients);
+
+        const cocktail = await createCocktail(name, category, description, image_url, ingredients);
         res.status(201).json(cocktail);
     } catch (error) {
         next(error);
@@ -62,10 +67,33 @@ export async function removeCocktail(req, res, next) {
 export async function modifyCocktail(req, res, next) {
     try {
         const { id } = req.params;
-        const updates = req.body;
-        const cocktail = await updateCocktail(id, updates);
+        const updates = req.body || {};
+        const ingredients = updates.ingredients || [];
+        delete updates.ingredients;
+
+        await verifyIngredients(ingredients);
+
+        const cocktail = await updateCocktail(id, updates, ingredients);
         res.status(200).json(cocktail);
     } catch (error) {
         next(error);
+    }
+}
+
+// HELPER METHOD FOR VERYFYING INGREDIENTS
+async function verifyIngredients(ingredients) {
+
+    // check if passed ingredients id are valid:
+    const present_ingredients = await getIngredients('', '', []); // empty sort, condition and values
+    const present_ids = present_ingredients.map(element => element.id);
+    const ids = ingredients.map(element => element.ingredient_id);
+
+    // identify invalid ids
+    const invalid = ids.filter(id => !present_ids.includes(id));
+    if(invalid.length > 0) {
+        const errorMessage = `Invalid ingredient ID(s): ${invalid.join(', ')}`;
+        const error = new Error(errorMessage);
+        error.status = 400;
+        throw error;
     }
 }

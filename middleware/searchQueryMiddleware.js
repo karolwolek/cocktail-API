@@ -1,5 +1,9 @@
+/*
+Aliases come in a form of xyz_
+They need to be transformed to xyz.
+*/
 
-export function searchQueryMiddleware() {
+export function searchQueryMiddleware(map) {
     return (req, res, next) => {
         // fetch copy of query
         const params = { ...req.query };
@@ -15,7 +19,13 @@ export function searchQueryMiddleware() {
         delete params.match_type;
 
 
-        for(const [field, value] of Object.entries(params)) {
+        for(let [field, value] of Object.entries(params)) {
+
+            //convert fields to proper alias if mapping provided
+            if(map) {
+                field = map[field];
+            }
+            
             // evaluate search matching
             const [operator, val_wrap] = (match_type === "partial" && typeof value === "string") ? ["LIKE", "%"] : ["=", ""];
 

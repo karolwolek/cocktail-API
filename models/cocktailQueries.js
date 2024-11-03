@@ -101,20 +101,48 @@ export async function getCocktail(id) {
   return cocktailData;
 }
 
-/*
-*
-* THE REST IS NOT TOUCHED !!!!!
-*
-*/
+export async function createCocktail(name, category, description, image_url, ingredients) {
+    const connection = await pool.getConnection();
 
-export async function createCocktail(name, category, description, image_url) {
-    const [result] = await pool.query(`
-        INSERT INTO Cocktail 
-        (name, category, description, image_url)
-        VALUES (?, ?, ?, ?)
-        `, [name, category, description, image_url]);
-    const id = result.insertId;
-    return getCocktail(id);
+    try {
+
+        await connection.beginTransaction();
+
+        // insert cocktail
+        const [cocktail] = await connection.query(`
+            INSERT INTO Cocktail 
+            (name, category, description, image_url)
+            VALUES (?, ?, ?, ?)
+            `, [name, category, description, image_url]
+        );
+
+        const cocktail_id = cocktail.insertId;
+
+        // prepare ingredient data
+        const ingredients_data = ingredients.map((item) => [
+            cocktail_id,
+            item.ingredient_id,
+            item.quantity
+        ]);
+
+        // insert ingredient data
+        await connection.query(`
+            INSERT INTO Cocktail_Ingredients (cocktail_id, ingredient_id, quantity)
+            VALUES ?
+            `, [ingredients_data] 
+        );
+
+        await connection.commit();
+
+        // Fetch the new cocktail with ingredients
+        return getCocktail(cocktail_id);
+
+    } catch (error) {
+        await connection.rollback();
+        throw error; // Propagate the error to be handled in the controller
+    } finally {
+        connection.release(); // Ensure the connection is always released
+    }
 }
 
 export async function deleteCocktail(id) {
@@ -125,12 +153,49 @@ export async function deleteCocktail(id) {
     return affected_rows;
 }
 
-export async function updateCocktail(id, updates) {
-    await pool.query(`
-        UPDATE Cocktail
-        SET ?
-        WHERE id = ?
-    `, [updates, id]);
+export async function updateCocktail(id, cocktail_updates, ingredients_updates) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
 
-    return getCocktail(id);
+        // Handle cocktail update if provided
+        if ( ! (Object.keys(cocktail_updates).length === 0 && cocktail_updates.constructor === Object)) {
+            await connection.query(`
+                UPDATE Cocktail
+                SET ? 
+                WHERE id = ?
+                `, [cocktail_updates, id]
+            );
+        }
+
+        // Handle ingredients if provided
+        if (ingredients_updates.length > 0) {
+            // Delete existing ingredients
+            await connection.query(`
+                DELETE FROM Cocktail_Ingredients WHERE cocktail_id = ?
+                `, [id]);
+  
+            // Insert new ingredients
+            const ingredientsData = ingredients_updates.map((item) => [
+            id,
+            item.ingredient_id,
+            item.quantity,
+        ]);
+            await connection.query(`
+            INSERT INTO Cocktail_Ingredients (cocktail_id, ingredient_id, quantity)
+            VALUES ?`, [ingredientsData]);
+        }
+
+        await connection.commit();
+
+        // Fetch the updated cocktail with ingredients
+        const cocktail = await getCocktail(id);
+        return cocktail;
+        
+    } catch(error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release()
+    }
 }
