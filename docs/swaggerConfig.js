@@ -8,14 +8,11 @@ const options = {
         info: {
             title: 'Cocktail-API',
             version: '1.0.0',
-            description: `
-            API documentation for the Cocktail-API,\n
-            Application made as a recruitment task for science club \n
-            Karol Wołkowski, 280477`,
+            description: "API documentation for the Cocktail-API, Application made as a recruitment task for science club  ' Karol Wołkowski, 280477 '"
         },
         servers: [
             {
-                url: 'http://localhost:8080/api-docs/',
+                url: 'http://localhost:8080/api',
                 description: 'Development server',
             },
         ],
