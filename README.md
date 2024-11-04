@@ -15,5 +15,26 @@ Pierwszy raz miałem okazję współtworzyć coś podobnego przy projekcie na uc
 ![image](https://github.com/user-attachments/assets/6cf0eb74-79a8-4f8c-bddc-8c9f7eaea160)
 Tabela Cocktail_Ingredients służy jako pośrednik do połączenia tabel Ingredient oraz Cocktail N-N
 
+# Uruchomienie
+Inicjalizacja paczek zdefiniowanych w pliku package.json:
+```
+npm init
+```
+utworzenie bazy danych:
+* Schemat bazy danych jest w pliku schema.sql w głównym folderze projektu
+* należy zainicjalizować swoje własne env z danymi do bazy danych oraz credentials
+  * ```
+    // .env file in main dir
+    MYSQL_HOST="xyz" 
+    MYSQL_USER="xyz"
+    MYSQL_PASSWORD="xyz"
+    MYSQL_DATABASE="xyz"
+    ```
+uruchomienie serwera komendą:
+```
+npm run dev
+```
+dokumentacja dostępna będzie pod adresem: http://localhost:8080/api
+
 
 
