@@ -14,7 +14,7 @@ Jest to moja druga styczność z tworzeniem backendu do aplikacji webowej.
 Pierwszy raz miałem okazję współtworzyć coś podobnego przy projekcie na uczelni: https://github.com/Skiperpol/HotelManagement (WolekXD contributor)
 
 # Projekt bazy danych
-![image](https://github.com/user-attachments/assets/6cf0eb74-79a8-4f8c-bddc-8c9f7eaea160)
+![image](https://github.com/user-attachments/assets/dd9bf10a-7833-4e3b-bed8-3953500d1ae4)
 Tabela Cocktail_Ingredients służy jako pośrednik do połączenia tabel Ingredient oraz Cocktail N-N
 
 # Uruchomienie
