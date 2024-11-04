@@ -36,7 +36,7 @@ uruchomienie serwera komendą:
 ```
 npm run dev
 ```
-dokumentacja dostępna będzie pod adresem: http://localhost:8080/api
+dokumentacja dostępna będzie pod adresem: http://localhost:8080/api-doc/
 
 
 
