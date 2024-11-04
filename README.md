@@ -5,8 +5,10 @@ Jest to projekt API do aplikacji zarządzania koktajlami oraz ich składnikami. 
 # Wykorzystane technologie
 
 Z wyboru do implementacji bazy danych wybrałem relacyjny model mysql.
-Api napisane w javascript w środowisku node.js z wykorzystaniem express.js
-Walidacja danych odbywa się przy pomocy Joi framework
+* javascript
+* Node.js v20.18.0
+* express.js v4.21.1
+* Joi v17.13.3 (walidacja danych)
 
 Jest to moja druga styczność z tworzeniem backendu do aplikacji webowej.
 Pierwszy raz miałem okazję współtworzyć coś podobnego przy projekcie na uczelni: https://github.com/Skiperpol/HotelManagement (WolekXD contributor)
