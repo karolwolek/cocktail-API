@@ -18,9 +18,9 @@ Pierwszy raz miałem okazję współtworzyć coś podobnego przy projekcie na uc
 Tabela Cocktail_Ingredients służy jako pośrednik do połączenia tabel Ingredient oraz Cocktail N-N
 
 # Uruchomienie
-Inicjalizacja paczek zdefiniowanych w pliku package.json:
+Instalacja paczek zdefiniowanych w pliku package.json:
 ```
-npm init
+npm install
 ```
 utworzenie bazy danych:
 * Schemat bazy danych jest w pliku schema.sql w głównym folderze projektu
